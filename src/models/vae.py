@@ -49,7 +49,7 @@ class VAE(nn.Module):
             pz = self.pz(*self.pz_params)
             latents = pz.rsample(torch.Size([N]))
             px_z = self.px_z(*self.dec(latents))
-            data = px_z.sample(torch.Size([K]))
+            data = px_z.sample(torch.Size([K])) # note the use of rsample (reparamterized sampling) for latents and normal sampling for px_z.
         return data.view(-1, *data.size()[3:])
 
     def reconstruct(self, data):
