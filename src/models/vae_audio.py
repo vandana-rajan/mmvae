@@ -26,7 +26,7 @@ class Enc(nn.Module):
     self.fc21 = nn.Linear(latent_dim,latent_dim)
     self.fc22 = nn.Linear(latent_dim,latent_dim)
   def forward(self,x):
-    e = self.enc(self.linear1(x))  # x.shape=(batch_size,88)
+    e = F.tanh(self.enc(F.tanh(self.linear1(x))))  # x.shape=(batch_size,88)
     lv = self.fc22(e)
     return self.fc21(e), F.softmax(lv, dim=-1) * lv.size(-1) + Constants.eta
  
@@ -37,8 +37,9 @@ class Dec(nn.Module):
       self.dec = nn.Linear(latent_dim, hidden_dim)
       self.fc3 = nn.Linear(hidden_dim, data_dim)
     def forward(self, z):
-      p = self.fc3(self.dec(z))
-      
+      p = self.fc3(F.tanh(self.dec(z)))
+      return p, torch.tensor(0.75).to(z.device)  # mean, length scale
+ 
       
 
     
