@@ -37,9 +37,9 @@ class VAE(nn.Module):
         raise NotImplementedError
 
     def forward(self, x, K=1):
-        self._qz_x_params = self.enc(x)
-        qz_x = self.qz_x(*self._qz_x_params)
-        zs = qz_x.rsample(torch.Size([K]))
+        self._qz_x_params = self.enc(x) # gives mu,logvar
+        qz_x = self.qz_x(*self._qz_x_params) # gives the distribution with mu and logvar
+        zs = qz_x.rsample(torch.Size([K])) # samples from the distribution
         px_z = self.px_z(*self.dec(zs))
         return qz_x, px_z, zs
 
